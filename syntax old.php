@@ -2,7 +2,6 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Andreas Gohr <gohr@cosmocode.de>
- * @author     Quotidianus <pagenav@b67.net>
  */
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
@@ -76,14 +75,6 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         }
         $id = $INFO['id'];
 
-        // get all namespaces in the superior namespace
-        static $listdir = null; // static to reuse the array for multiple calls.
-        if(is_null($listdir)){
-           $listdir = array();
-           $supns = substr($ns,0,strripos($ns,'/'));
-           search($listdir,$conf['datadir'],'search_namespaces',array(),$supns);
-        }
-
         // find the start page
         $exist = false;
         $start = getNS($INFO['id']).':';
@@ -92,16 +83,12 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         $cnt = count($list);
         if($cnt < 2) return true; // there are no other doc in this namespace
 
-        $cntdir = count($listdir);
-        if($cntdir < 2) return true; // there are no other namespace in the superior namespace
-     
         $first = '';
         $prev  = '';
         $last  = '';
         $next  = '';
         $self  = false;
 
-   if($id != $start) { // if we are not on a start page
         // we go through the list only once, handling all options and globs
         // only for the 'last' command the whole list is iterated
         for($i=0; $i < $cnt; $i++){
@@ -126,30 +113,6 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
                 }
             }
         }
-   }else{  // if we are on a start page
-        for($i=0; $i < $cntdir; $i++){
-            if($listdir[$i]['id'] == substr($id,0,strripos($id,':'))){
-                $self = true;
-            }else{
-                if($glob && !preg_match('/'.$glob.'/',noNS($listdir[$i]['id']))) continue;
-
-                if($self){
-                    // we're after the current id
-                    if(!$next){
-                        $next = $listdir[$i]['id'].':';
-                    }
-                    $last = $listdir[$i]['id'].':';
-                }else{
-                    // we're before the current id
-                    if(!$first){
-                        $first = $listdir[$i]['id'].':';
-                    }
-                    $prev = $listdir[$i]['id'].':';
-                }
-            }
-        }
-        $start = $supns.'/';
-   }
 
         $renderer->doc .= '<p class="plugin__pagenav">';
         if($mode & 4) $renderer->doc .= $this->_buildImgLink($first,'first');
