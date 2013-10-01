@@ -93,7 +93,7 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         if($cnt < 2) return true; // there are no other doc in this namespace
 
         $cntdir = count($listdir);
-        if($cntdir < 2) return true; // there are no other namespace in the superior namespace
+//        in case of only one namespace on the $supns, we can use the [<8>] syntax
      
         $first = '';
         $prev  = '';
