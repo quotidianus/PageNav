@@ -58,18 +58,31 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         static $list = null; // static to reuse the array for multiple calls.
         $id = cleanID(getID());
         if(is_null($list)){
-            $list = array();
-            $nsdir = str_replace(':','/',getNS($id));
-            search($list,$conf['datadir'],'search_list',array(),$nsdir);
+           $list = array();
+           $nsdir = str_replace(':','/',getNS($id));
+           $opts = array('listdirs'  => false,
+                         'listfiles' => true,
+                         'pagesonly' => true,
+                         'depth'     => 1,
+                         'skipacl'   => false, // to check for read right
+                         'sneakyacl' => true,
+                         'showhidden'=>false,
+                         );
+           search($list,$conf['datadir'],'search_universal',$opts,$nsdir);
         }
         // get all namespaces in the superior namespace
         static $listdir = null; // static to reuse the array for multiple calls.
         if(is_null($listdir)){
            $listdir = array();
            $supnsdir = substr($nsdir,0,strripos($nsdir,'/'));
-           // search_namespaces strangely overrides $opts array, so we need a little
-           // hack here:
-           search($listdir,$conf['datadir'],'search_universal',array('listdirs'=> true, 'depth' =>1),$supnsdir);
+           $opts = array('listdirs'  => true,
+                         'listfiles' => false,
+                         'depth'     => 1,
+                         'skipacl'   => false, // to check for read right
+                         'sneakyacl' => true,
+                         'showhidden'=>false,
+                         );
+           search($listdir,$conf['datadir'],'search_universal',$opts,$supnsdir);
         }
         // find the start page
         $exists = false;
@@ -99,10 +112,6 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
               }
               // we don't link start page
               if($listid == $start) {
-                continue;
-              }
-              // we don't link unacessible pages
-              if ($list[$i]['perm'] < AUTH_READ) {
                 continue;
               }
               if($self){
