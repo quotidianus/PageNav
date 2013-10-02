@@ -154,7 +154,7 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
                 }
               }
             }
-        $start = $supns.'/';
+        $start = $supnsdir.'/';
         } // end if/else on start page
         $renderer->doc .= '<p class="plugin__pagenav">';
         if($mode & 4) $renderer->doc .= $this->_buildImgLink($first,'first');
