@@ -68,6 +68,8 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
                          'sneakyacl' => true,
                          'showhidden'=>false,
                          );
+           // we cannot use $opts in search_namespaces, see
+           // https://bugs.dokuwiki.org/index.php?do=details&task_id=2858
            search($list,$conf['datadir'],'search_universal',$opts,$nsdir);
         }
         // get all namespaces in the superior namespace
