@@ -90,27 +90,33 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
           // we go through the list only once, handling all options and globs
           // only for the 'last' command the whole list is iterated
           for($i=0; $i < $cnt; $i++){
-            if($list[$i]['id'] == $id){
+            $listid = $list[$i]['id'];
+            if($listid == $id){
               $self = true;
             } else {
-              if($glob && !preg_match('/'.$glob.'/',noNS($list[$i]['id']))) {
+              if($glob && !preg_match('/'.$glob.'/',noNS($listid))) {
                 continue;
               }
-              if($list[$i]['id'] == $start) {
+              // we don't link start page
+              if($listid == $start) {
+                continue;
+              }
+              // we don't link unacessible pages
+              if ($list[$i]['perm'] < AUTH_READ) {
                 continue;
               }
               if($self){
                 // we're after the current id
                 if(!$next){
-                    $next = $list[$i]['id'];
+                    $next = $listid;
                 }
-                $last = $list[$i]['id'];
+                $last = $listid;
                 } else {
                   // we're before the current id
                   if(!$first){
-                    $first = $list[$i]['id'];
+                    $first = $listid;
                   }
-                  $prev = $list[$i]['id'];
+                  $prev = $listid;
                 }
             }
           }
