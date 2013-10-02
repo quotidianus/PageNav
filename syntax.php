@@ -59,24 +59,28 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         $id = cleanID(getID());
         if(is_null($list)){
             $list = array();
-            $ns = str_replace(':','/',getNS(cleanID(getID()));
-            search($list,$conf['datadir'],'search_list',array(),$ns);
+            $nsdir = str_replace(':','/',getNS($id));
+            search($list,$conf['datadir'],'search_list',array(),$nsdir);
         }
         // get all namespaces in the superior namespace
         static $listdir = null; // static to reuse the array for multiple calls.
         if(is_null($listdir)){
            $listdir = array();
-           $supns = substr($ns,0,strripos($ns,'/'));
-           search($listdir,$conf['datadir'],'search_namespaces',array(),$supns);
+           $supnsdir = substr($nsdir,0,strripos($nsdir,'/'));
+           // search_namespaces strangely overrides $opts array, so we need a little
+           // hack here:
+           search($listdir,$conf['datadir'],'search_universal',array('listdirs'=> true, 'depth' =>1),$supnsdir);
         }
         // find the start page
-        $exist = false;
-        $start = getNS($INFO['id']).':';
-        resolve_pageid('',$start,$exist);
+        $exists = false;
+        $start = getNS($id).':';
+        // following function sets $start to start page id and
+        // $exists to true of false if it exists or not.
+        resolve_pageid('',$start,$exists);
         $cnt = count($list);
         if($cnt < 2) return true; // there are no other doc in this namespace
         $cntdir = count($listdir);
-//        in case of only one namespace on the $supns, we can use the [<8>] syntax
+        // In case of only one namespace on the $supns, we can use the [<8>] syntax
         $first = '';
         $prev  = '';
         $last  = '';
