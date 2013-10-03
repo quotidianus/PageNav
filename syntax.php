@@ -68,7 +68,7 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
                          'sneakyacl' => true,
                          'showhidden'=>false,
                          );
-           // we cannot use $opts in search_namespaces, see
+           // we cannot use $opts in search_list or in search_namespaces, see
            // https://bugs.dokuwiki.org/index.php?do=details&task_id=2858
            search($list,$conf['datadir'],'search_universal',$opts,$nsdir);
         }
@@ -93,9 +93,9 @@ class syntax_plugin_pagenav extends DokuWiki_Syntax_Plugin {
         // $exists to true of false if it exists or not.
         resolve_pageid('',$start,$exists);
         $cnt = count($list);
-        if($cnt < 2) return true; // there are no other doc in this namespace
+        // if($cnt < 2) return true; // there are no other doc in this namespace
         $cntdir = count($listdir);
-        // In case of only one namespace on the $supns, we can use the [<8>] syntax
+        // In case of only one namespace on the $supnsdir, we can use the [<8>] syntax
         $first = '';
         $prev  = '';
         $last  = '';
