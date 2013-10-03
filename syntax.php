@@ -2,7 +2,6 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Andreas Gohr <gohr@cosmocode.de>
- * @author     Quotidianus <pagenav@b67.net>
  */
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
